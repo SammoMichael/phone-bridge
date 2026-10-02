@@ -1,8 +1,8 @@
 # Phone Bridge
 
-Remote-control your own Android phone from anywhere. An accessibility-service app polls a command queue on your server, executes taps/swipes/typing/screenshots, and posts results back. No inbound ports — the phone only makes outgoing HTTPS calls, so it works behind NAT, firewalls, and the Great Firewall.
+Let your AI assistant operate your Android phone. An accessibility-service app polls a command queue on your server, executes taps/swipes/typing/screenshots, and posts results back. No inbound ports — the phone only makes outgoing HTTPS calls, so it works behind NAT and firewalls.
 
-Built for a month-long China trip where the laptop couldn't stay on. The phone is the computer you already carry.
+Built so Muse can do phone-only things that can't be done in a VM browser: mobile-only apps, SMS verification flows, apps that need a real device, anything that requires your actual phone.
 
 ## How it works
 
@@ -56,7 +56,8 @@ See [docs/SECURITY.md](docs/SECURITY.md) for the threat model.
 
 ## Use cases
 
-- **Travel**: Operate region-locked apps (WeChat, Alipay, 12306, Meituan) from your laptop while the phone sits in your pocket.
+- **AI assistant phone control**: Let Muse (or any agent) operate mobile-only apps, handle SMS verification, and do anything that needs your real phone instead of a VM browser.
+- **Travel**: Operate region-locked apps from your laptop while the phone sits in your pocket.
 - **Accessibility**: Drive the phone for someone who can't use the touchscreen.
 - **QA/Testing**: Scripted UI testing on real devices without USB.
 - **Automation**: Anything you'd tap through manually, scripted.
