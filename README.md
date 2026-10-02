@@ -1,3 +1,6 @@
+<img width="1920" height="1280" alt="architecture-diagram" src="https://github.com/user-attachments/assets/5a31cf03-504b-42d9-8367-b774ad6d796a" />
+
+
 # Phone Bridge
 
 Let your AI assistant operate your Android phone. An accessibility-service app polls a command queue on your server, executes taps/swipes/typing/screenshots, and posts results back. No inbound ports — the phone only makes outgoing HTTPS calls, so it works behind NAT and firewalls.
