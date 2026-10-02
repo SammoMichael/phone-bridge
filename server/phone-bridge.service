@@ -1,0 +1,16 @@
+[Unit]
+Description=Phone Bridge queue server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/phone-bridge
+Environment=PB_CONFIG=/opt/phone-bridge/config.json
+ExecStart=/usr/bin/python3 /opt/phone-bridge/queue_server.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

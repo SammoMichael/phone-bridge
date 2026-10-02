@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Phone Bridge</string>
+    <string name="service_description">Phone Bridge lets your own assistant operate this phone remotely (tap, type, read the screen) via a private command queue on your server. Only someone holding your secret token can send commands. Turn this off at any time to revoke access instantly.</string>
+</resources>

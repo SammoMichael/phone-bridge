@@ -1,0 +1,1 @@
+{"bind":"127.0.0.1","port":8080,"tls_cert":null,"tls_key":null,"token":"REPLACE_WITH_32_HEX_CHARS_FROM_openssl_rand_-hex_32"}
