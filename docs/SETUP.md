@@ -107,5 +107,5 @@ See `server/pb.py --help` for all commands. See [PROTOCOL.md](PROTOCOL.md) for t
 - **"No commands received"**: Check the token matches. Check the server is reachable via HTTPS. Check the app shows "Polling".
 - **App stops polling**: Battery optimization. Set to Unrestricted. On some OEMs (Xiaomi, Huawei), also enable "Autostart".
 - **Accessibility service disabled after reboot**: Normal Android behavior. Re-enable after reboot, or use an automation app to re-enable it.
-- **`type` doesn't work in an app**: Some apps block `AccessibilityService` input (e.g. WeChat's custom fields). Fallback: `adb shell input text` via wireless debugging.
+- **`type` doesn't work in an app**: Tap the field first to focus it. If it still fails, the app may use a custom input field — try tapping it, waiting a moment, then `type` again.
 - **Screenshot is black**: The app was in the background, or the screen was off. Screenshots capture the current foreground app.

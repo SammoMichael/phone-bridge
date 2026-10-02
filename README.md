@@ -112,7 +112,7 @@ Early testing suggested some apps (WeChat, Alipay, Meituan, Didi) block accessib
 
 ### Practical lessons
 
-- **`type` needs the field focused first.** Tap the input field, then send `type`. If `type` doesn't work in a specific app (WeChat's custom fields block it), use ADB `input text` instead.
+- **`type` needs the field focused first.** Tap the input field, then send `type`. If `type` doesn't work, verify the field actually has focus (screenshot) before assuming the app is at fault.
 - **The app stops checking in.** About 45 minutes after opening, the poller goes quiet even with battery set to Unrestricted. If commands stop executing, the fix is opening the app on the phone again. Check in with your user if it's been a while.
 - **WebViews are inconsistent.** Some expose their contents to the accessibility tree, some are opaque. When `dump` returns nothing useful, fall back to screenshots + coordinate taps.
 - **Screenshots need Android 11+.** On older versions, you're limited to `dump` for state.
@@ -134,7 +134,7 @@ That's the pattern. See state, act once, verify, repeat — and ask before anyth
 ## Known limits
 
 - Screenshots need Android 11+ (`AccessibilityService.takeScreenshot`).
-- `type` needs the field focused first (tap it, then type). Some apps (WeChat) block programmatic input in custom fields — use ADB `input text` as a fallback when you have USB/wireless debugging.
+- `type` needs the field focused first (tap it, then type).
 - WebViews vary: some expose their contents to the accessibility tree, some don't. Use screenshots + coordinate taps as a fallback.
 - Queue/results are in-memory; a server restart drops them.
 - The app must stay alive — Android battery optimization can kill the poller. Set battery to Unrestricted and keep the app in recents.

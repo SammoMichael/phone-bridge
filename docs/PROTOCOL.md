@@ -99,7 +99,7 @@ Each line: `depth;class;flags;[left,top,right,bottom];text;content-desc`
 
 Flags: `C` = clickable, `E` = editable, `F` = focused, `S` = scrollable. `-` = no.
 
-Note: some apps (WeChat, banking apps) block accessibility inspection and return an empty tree. Use `screenshot` instead.
+Note: some apps return an empty accessibility tree (custom rendering). Use `screenshot` instead.
 
 ### `screenshot`
 
