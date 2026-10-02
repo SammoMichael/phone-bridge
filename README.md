@@ -62,6 +62,83 @@ See [docs/SECURITY.md](docs/SECURITY.md) for the threat model.
 - **QA/Testing**: Scripted UI testing on real devices without USB.
 - **Automation**: Anything you'd tap through manually, scripted.
 
+## For AI assistants
+
+If you're an AI agent setting this up to operate a phone on your user's behalf, here's the operating pattern that actually works — including the things we learned the hard way.
+
+### The async command pattern
+
+This is not request/response. You enqueue a command, the phone polls for it on its own schedule, executes it, and posts the result back. Your driver loop looks like this:
+
+```
+1. POST /enqueue {"action": "tap", "x": 540, "y": 1200}
+   → returns {"id": "cmd-123"} immediately (NOT the result)
+2. Poll GET /result/cmd-123 until {"status": "done"}
+   → returns {"ok": true} or the action's payload
+```
+
+`pb.py` handles this for you, but if you're building your own driver, don't treat enqueue as synchronous. Commands typically execute within 2–5 seconds, but poll with a timeout.
+
+### The operate loop
+
+Every phone task follows the same loop:
+
+```
+1. screenshot (or dump) → see current state
+2. Analyze: what screen am I on? What's the next action?
+3. Enqueue ONE action (tap, type, swipe, etc.)
+4. Wait for result, then screenshot again to verify the state changed as expected
+5. Repeat until done
+```
+
+One action at a time. Don't batch multiple taps without verifying — if the first tap missed, everything after it is wrong. The screenshot-after-every-action discipline is what makes this reliable.
+
+### Save layout maps per app
+
+After you've navigated an app once, save the coordinates of key UI elements to a file (e.g. `layout-maps/wechat.md`). Next time, you go straight to the coordinates instead of dumping and guessing. This is the single biggest speedup.
+
+Example:
+```markdown
+## WeChat
+- Tab bar: Chats (150, 2230), Contacts (450, 2230), Discover (750, 2230), Me (970, 2230)
+- Me → Pay and Services: (540, 700)
+```
+
+**Always `dump` for exact coordinates. Never guess from screenshots.** Screenshots are for understanding layout; the accessibility dump gives you pixel-exact bounds. A tap at guessed coordinates will miss.
+
+### Some apps block accessibility taps
+
+Chinese super-apps (WeChat, Meituan, Didi, Alipay) systematically block `AccessibilityService` taps — you'll get `tap_failed`. But `open`, `dump`, `screenshot`, and `key` still work fine. You can see everything, you just can't tap.
+
+The fallback is ADB `input tap` via wireless debugging:
+```bash
+adb connect <phone-ip>:5555
+adb shell input tap 540 1200
+```
+
+This works because it's a different input path that these apps don't block. Set up wireless debugging once; it survives as long as the phone stays on the same network.
+
+### Practical lessons
+
+- **`type` needs the field focused first.** Tap the input field, then send `type`. If `type` doesn't work in a specific app (WeChat's custom fields block it), use ADB `input text` instead.
+- **The app stops checking in.** About 45 minutes after opening, the poller goes quiet even with battery set to Unrestricted. If commands stop executing, the fix is opening the app on the phone again. Check in with your user if it's been a while.
+- **WebViews are inconsistent.** Some expose their contents to the accessibility tree, some are opaque. When `dump` returns nothing useful, fall back to screenshots + coordinate taps.
+- **Screenshots need Android 11+.** On older versions, you're limited to `dump` for state.
+- **Confirm before money moves.** Navigating, filling forms, and reading screens is fine to do autonomously. Anything that spends money, sends a message, or makes a booking needs the user's explicit go-ahead — every time, not just the first time.
+
+### Example session
+
+```
+You: screenshot → see WeChat home, on Chats tab
+You: tap (970, 2230) → Me tab
+You: screenshot → verify Me tab open
+You: tap (540, 700) → Pay and Services
+You: screenshot → verify payment screen
+You: "I can see your WeChat Pay balance. Want me to...?"
+```
+
+That's the pattern. See state, act once, verify, repeat — and ask before anything irreversible.
+
 ## Known limits
 
 - Screenshots need Android 11+ (`AccessibilityService.takeScreenshot`).
