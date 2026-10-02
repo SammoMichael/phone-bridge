@@ -106,17 +106,9 @@ Example:
 
 **Always `dump` for exact coordinates. Never guess from screenshots.** Screenshots are for understanding layout; the accessibility dump gives you pixel-exact bounds. A tap at guessed coordinates will miss.
 
-### Some apps block accessibility taps
+### Taps are not blocked — verify, don't assume
 
-Chinese super-apps (WeChat, Meituan, Didi, Alipay) systematically block `AccessibilityService` taps — you'll get `tap_failed`. But `open`, `dump`, `screenshot`, and `key` still work fine. You can see everything, you just can't tap.
-
-The fallback is ADB `input tap` via wireless debugging:
-```bash
-adb connect <phone-ip>:5555
-adb shell input tap 540 1200
-```
-
-This works because it's a different input path that these apps don't block. Set up wireless debugging once; it survives as long as the phone stays on the same network.
+Early testing suggested some apps (WeChat, Alipay, Meituan, Didi) block accessibility taps. That was never rigorously proven — it was a guess written up as fact. Android's accessibility framework exists for blind users; a complete block would break TalkBack. Don't assume blockage. If a tap doesn't work, check your coordinates first (always `dump` for exact bounds), verify with a screenshot, and only then investigate further.
 
 ### Practical lessons
 
